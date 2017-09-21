@@ -1,0 +1,108 @@
+<!-- 
+     http://localhost:8080/users/{login}/showUser
+     Просмотр данных пользователя
+     Доступ по идентификатору login
+     Используется библиотека шаблонов thymeleaf
+-->
+
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <title>Просмотр пользователя</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /> 
+    <style type="text/css">
+	  .head {
+        margin: auto; 
+        text-align: center;
+        border: 0px;
+      }
+      .bigbutton {
+        width: 300px;
+      }
+      .mediumbutton {
+        width: 200px;
+      }
+      .smallbutton {
+        width: 100px;
+      }
+      .bold {
+        font-weight: bold;
+        text-align: right;
+      }
+      .noneborder {
+         border: 0px;
+      }
+      table {
+        margin: auto; 
+        text-align: center;
+        border-collapse: collapse; 
+        border-style: solid;
+        width: 600px;
+        table-layout: fixed;
+      }
+      td {
+        padding: 10px; 
+        border: 2px solid black;
+      }
+	</style>
+  </head>
+  <body>
+  
+    <!-- Шаблон класса berezin.azoft.user.User -->
+    <div th:object="${user}"> 
+            
+      <!-- Обработка запроса - переход на главную страницу. Контроллер - метод index -->
+      <form id="toIndexForm" th:action="@{/}"  th:method="get"></form>
+      
+      <table class="head">
+        <thead>
+		  <tr>
+		    <th colspan="2" class="head">Просмотр пользователя:</th>	
+		  </tr>
+	    </thead>
+	      <tbody>
+	        <tr>
+  	        <td class="noneborder" style="text-align: right;">
+  	          <!-- Вернуться назад -->
+  	          <input class="mediumbutton" type="button" onclick="history.back();" value="Назад" />    
+  	        </td>
+  	        <td class="noneborder" style="text-align: left;">
+  	          <!-- Переход на главную страницу  -->
+  	          <input class="mediumbutton" type="submit" form="toIndexForm" value="На главную странцицу" />
+  	        </td>
+  	      </tr>  
+	    </tbody>    
+	  </table>
+	  
+	  <!-- Вывод значений соответствующих полей из шаблона класса User  -->
+	  <table> 
+  	    <tbody>
+  	      <tr>
+  	        <td class="bold">Login</td>
+  	        <td th:text="*{login}"></td>
+  	      </tr>
+  	      <tr>
+  	        <td class="bold">Имя</td>
+  	        <td th:text="*{name}"></td>
+  	      </tr>
+  	      <tr>
+  	        <td class="bold">Фамилия</td>
+  	        <td th:text="*{surName}"></td>
+  	      </tr>
+  	      <tr>
+  	        <td class="bold">Дата рождения</td>
+  	        <td th:text="*{birthDate}"></td>
+  	      </tr>
+  	      <tr>
+  	        <td class="bold">Адрес проживания</td>
+  	        <td th:text="*{adress}"></td>
+  	      </tr>
+  	      <tr>
+  	        <td class="bold">Дополнительная информация</td>
+  	        <td th:text="*{info}"></td>
+  	      </tr>
+        </tbody>
+      </table>
+    </div>
+  </body>  
+</html>

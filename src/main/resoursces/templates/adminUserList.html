@@ -1,0 +1,109 @@
+<!--
+    http://localhost:8080/adminMode/users?password={password}
+    password - пароль администратора
+    Редактирование списка пользователей (удаление пользователей) и просмотр деталей.
+    Используется библиотека шаблонов thymeleaf
+-->
+
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <title>Список пользователей. Редактирование</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<style type="text/css">
+	  .head {
+        margin: auto; 
+        text-align: center;
+        border: 0px;
+        padding: 10px;
+      }
+      .bigbutton {
+        width: 300px;
+      }
+      .mediumbutton {
+        width: 200px;
+      }
+      .smallbutton {
+        width: 100px;
+      }
+      .error {
+        color: red;
+      }
+       .noneborder {
+         border: 0px;
+      }
+      table {
+        margin: auto; 
+        text-align: center;
+        border-collapse: collapse; 
+        border-style: solid;
+      }
+      td, th {
+        padding: 10px; 
+        border: 2px solid black;
+      }
+	</style>
+  </head>
+  <body>
+  
+    <!-- Обработка запроса - переход на главную страницу. Контроллер - метод index -->
+    <form id="toIndexForm" th:action="@{/}"  th:method="get"></form>
+    
+    <table class="head">
+      <thead>
+	    <tr>
+		  <th class="head">Список пользователей</th>	
+	    </tr>
+	    <tr>
+	      <td class="noneborder" style="text-align: right;">
+  	        <!-- Вернуться назад -->
+  	        <input class="mediumbutton" type="button" onclick="history.back();" value="Назад" />    
+  	        </td>
+  	        <td class="noneborder" style="text-align: left;">
+  	          <!-- Переход на главную страницу  -->
+  	          <input class="mediumbutton" type="submit" form="toIndexForm" value="На главную странцицу" />
+  	        </td>
+  	      </tr>
+	    </thead>
+      </table>
+  
+      <table> 
+        <tbody>
+  	      <tr>
+  	        <th>№</th>
+  	        <th>Login</th>
+  	        <th>Имя</th>
+  	        <th>Фамилия</th>
+  	        <th>Дата рождения</th>
+  	        <th/>
+  	        <th/>
+  	      </tr>
+  	      <!-- Вывод элементов списка. userList- шаблон списка пользователей,
+  	           user - шаблон класса User, элемент списка userList, 
+  	           list - шаблон, содержащий информацию о списке (используется индекс) -->
+          <tr th:each="user, list: ${userList}">
+		    <td th:text="${list.index+1}" />
+		    <td th:text="${user.login}" />
+		    <td th:text="${user.name}" />
+		    <td th:text="${user.surName}" />
+		    <td th:text="${user.birthDate}" />
+		    <td>
+		      <!-- Обработка запроса - просмотр деталей пользователя. Метод GET. Контроллер - метод showUser -->
+			  <form th:id="${user.login}" th:action="@{/users/{login}/showUser(login=${user.login})}" 
+			        th:method="get">
+			  <input class="mediumbutton" type="submit" value="Подробнее" />
+		    </form>
+		  </td>
+		  <td>
+		    <!-- Обработка запроса - удаление администратором пользователя . Метод DELETE. 
+		         Контроллер - метод delete -->
+		    <form th:id="${user.login}" th:action="@{'/adminMode/users/'+${user.login}(password=${mw.message})}" 
+			      th:method="delete">
+			  <input class="mediumbutton" type="submit" value="Удалить аккаунт" onclick="return confirm('Удалить аккаунт?')" />
+		    </form> 
+		  </td>
+	    </tr>
+      </tbody>
+    </table>
+  </body>
+</html>

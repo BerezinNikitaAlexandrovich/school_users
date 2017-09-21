@@ -1,0 +1,210 @@
+<!-- 
+     http://localhost:8080/users/{login}?password={password}
+     Доступ по login и password  - логин и пароль пользователя
+     Редактирование существующего пользователя системы.
+     Сообщения об ошибках при сохранении неправильных данных 
+     Используется библиотека шаблонов thymeleaf
+-->
+
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <title>Меню пользователя</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /> 
+    <style type="text/css">
+	  .head {
+        margin: auto; 
+        text-align: center;
+        border: 0px;
+        padding: 10px;
+      }
+      .bigbutton {
+        width: 300px;
+      }
+      .mediumbutton {
+        width: 200px;
+      }
+      .smallbutton {
+        width: 100px;
+      }
+      .error {
+        color: red;
+      }
+      .toppadding {
+        padding-top: 10px;
+        padding-left: 30px;
+        padding-right: 30px;
+      }
+      table {
+        margin: auto; 
+        text-align: center;
+        border-collapse: collapse; 
+        border-style: solid;
+      }
+	</style>
+    <script type="text/javascript" th:inline="javascript">
+      //фукция вывода значения элемента в подсказку(используется для отображения пароля)
+      function showPassword(element){
+	  	element.setAttribute('title', element.value);
+	  }
+    </script>
+  </head>
+  <body>
+  
+    <!-- Шаблон класса berezin.azoft.user.User-->
+    <div th:object="${user}">
+      
+      <!-- Отправка ИЗМЕНЕННЫХ пользователем данных. Метод PUT. Контроллер - updateUser -->
+      <form id="updateUserForm" th:action="@{'/users/'+*{login}(oldPassword=*{password})}" th:method="put">
+      <!-- Скрытое поле используется для корректной работы метода save UserRepository в режиме обновления записи в БД-->
+      <input type="hidden" form="updateUserForm" name="id" th:field="*{id}" />
+      </form>
+      
+       <!-- Удаление пользователя из базы данных. Метод DELETE. Контроллер - метод deleteUser -->
+      <form name="deleteUserForm" id="deleteUserForm" th:action="@{'/users/'+*{login}(password=*{password})}" 
+            th:method="delete">
+	  </form>
+      
+      <!-- Обработка запроса - переход на главную страницу. Контроллер - метод index -->
+      <form id="toIndexForm" action="#" th:action="@{/}"  th:method="get"></form>
+      
+      <table class="head">
+        <thead>
+		  <tr>
+		    <th class="head">Меню пользователя.Редактирование данных:</th>	
+		  </tr>
+	    </thead>
+	    <tbody>
+	      <tr>
+		    <td>*-поля обязательного заполнения</td>	
+		  </tr>
+	    </tbody>
+	  </table>
+	  
+	  <table> 
+  	    <tbody>
+  	      <tr>
+  	        <td class="toppadding" colspan="3">Логин (login)*:</td>
+  	      </tr>
+  	      <tr>
+  	        <td colspan="3">
+  	          <!-- Текстовое поле "логин", отображение текущего значения без возможности редактирования, 
+  	            будет передано экземпляру класса berezin.azoft.user.Users, поле login -->
+  	          <input type="text" name="login" disabled="disabled" form="updateUserForm" th:field="*{login}" />
+  	        </td>
+  	      </tr>
+  	      <tr>
+  	        <td class="toppadding" colspan="3">Пароль (password)*:</td>
+  	      </tr>
+  	      <tr>
+  	        <td colspan="3">
+  	          <!-- Текстовое поле "пароль", измененное значение будет передано экземпляру
+  	           класса berezin.azoft.user.Users, поле password -->
+  	          <input type="password" name="password" form="updateUserForm" 
+  	           th:value="*{password}" onmouseover="showPassword(this)" oninput="showPassword(this)"/>
+  	        </td>
+  	      </tr>
+  	      <tr>
+  	        <!-- Если измененное значение password не прошло валидацию, то будет 
+  	         выведено сообщение об ошибке -->
+  	        <td colspan="3" class="error" th:if="${#fields.hasErrors('password')}" th:errors="*{password}" />
+  	      </tr>
+  	      <tr>
+  	        <td class="toppadding" colspan="3">Имя:</td>
+  	      </tr>
+  	      <tr>
+  	        <td colspan="3">
+  	          <!-- Текстовое поле "имя", измененное значение будет передано экземпляру
+  	           класса berezin.azoft.user.Users, поле name -->
+  	          <input type="text" name="name" form="updateUserForm" th:field="*{name}" />
+  	        </td>
+  	      </tr>
+  	      <tr>
+  	        <!-- Если измененное значение name не прошло валидацию, то будет 
+  	         выведено сообщение об ошибке -->
+  	        <td colspan="3" class="error" th:if="${#fields.hasErrors('name')}" th:errors="*{name}" />
+  	      </tr>
+  	      <tr>
+  	        <td class="toppadding" colspan="3">Фамилия:</td>
+  	      </tr>
+  	      <tr>
+  	        <td colspan="3">
+  	          <!-- Текстовое поле "фамилия", введеное значение будет передано экземпляру
+  	           класса berezin.azoft.user.Users, поле surName-->
+  	          <input type="text" name="surName" form="updateUserForm" th:field="*{surName}" />
+  	        </td>
+  	      </tr>
+  	      <tr>
+  	        <!-- Если введеное значение surName не прошло валидацию, то будет 
+  	         выведено сообщение об ошибке -->
+  	        <td colspan="3" class="error" th:if="${#fields.hasErrors('surName')}" th:errors="*{surName}" />
+  	      </tr>
+  	      <tr>
+  	        <td class="toppadding" colspan="3">Дата рождения:</td>
+  	      </tr>
+  	      <tr>
+  	        <td colspan="3">
+  	          <!-- Текстовое поле "Адрес", введеное значение будет передано экземпляру
+  	           класса berezin.azoft.user.Users, поле birthDate Валидация осуществляется в теге input birthDate -->
+  	          <input type="date"  min="2000-01-01" max="2010-01-01" name="birthDate" form="updateUserForm" th:value="*{birthDate}" />
+  	        </td>
+  	      </tr>
+  	      <tr>
+  	        <td class="toppadding" colspan="3">Адрес проживания:</td>
+  	      </tr>
+  	      <tr>
+  	        <td colspan="3">
+  	          <!-- Текстовое поле "Адрес", введеное значение будет передано экземпляру
+  	           класса berezin.azoft.user.Users, поле adress -->
+  	          <input style="width: 300px;" type="text" name="adress" form="updateUserForm" th:field="*{adress}" />
+  	        </td>
+  	      </tr>
+  	      <tr>
+  	        <!-- Если введеное значение adress не прошло валидацию, то будет 
+  	         выведено сообщение об ошибке -->
+  	        <td colspan="3" class="error" th:if="${#fields.hasErrors('adress')}" th:errors="*{adress}" />
+  	      </tr>
+  	      <tr>
+  	        <td class="toppadding" colspan="3">Краткое сообщение о себе (до 1000 символов):</td>
+  	      </tr>
+  	      <tr>
+  	        <td colspan="3">
+  	          <!-- Текстовое поле "Информация о себе", введеное значение будет передано экземпляру
+  	           класса berezin.azoft.user.Users, поле info -->
+  	          <textarea rows="15" cols="40" form="updateUserForm" th:field="*{info}">
+			  </textarea>
+  	        </td>
+  	      </tr>
+  	      <tr>
+  	        <!-- Если введеное значение name не прошло валидацию, то будет 
+  	         выведено сообщение об ошибке -->
+  	        <td colspan="3" class="error" th:if="${#fields.hasErrors('info')}" th:errors="*{info}" />
+  	      </tr>
+  	      <tr>
+  	        <td style="text-align: right;">
+  	          <!-- Сохранить данные пользователя -->
+  	          <input class="mediumbutton" type="submit" form="updateUserForm" value="Сохранить изменения"
+			         onclick="return confirm('Сохранить изменения?')" />
+  	        </td>
+  	        <td style="text-align: left;">
+  	          <!-- Отменить внесенные изменения  -->
+  	         <input class="bigbutton" type="reset" value="Отменить внесенные изменения" form="updateUserForm"
+			        onclick="return confirm('Отменить изменения?')" /> 
+  	        </td>
+  	        <td style="text-align: right;">
+  	          <!-- Удалить пользователя из системы -->
+  	          <input class="mediumbutton" type="submit" form="deleteUserForm" value="Удалить пользователя?" 
+  	                 onclick="return confirm('Удалить пользователя?')" />
+  	        </td>
+  	      </tr>
+  	      <tr>
+  	        <td colspan="3">
+  	          <!-- Переход на главную страницу  -->
+  	          <input class="bigbutton" type="submit" form="toIndexForm" value="На главную странцицу" />
+  	        </td>
+  	      </tr>  
+        </tbody>
+      </table>
+    </div>
+  </body>  
+</html>

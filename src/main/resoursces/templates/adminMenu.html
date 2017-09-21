@@ -1,0 +1,138 @@
+<!--
+    http://localhost:8080/adminMode?password={password}
+    password - пароль администратора
+    Меню администратора.
+	Изменение пароля администратора
+	Вход в список пользователей с возможностью удаления пользователей, детального просмотра
+    Сообщение об ошибке при вводе невалидного пароля
+    Используется библиотека шаблонов thymeleaf
+-->
+
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <title>Меню администратора</title>	
+    <style type="text/css">
+	  .head {
+        margin: auto; 
+        text-align: center;
+        border: 0px;
+        padding: 10px;
+      }
+      .toppadding {
+        padding-top: 10px;
+        padding-left: 30px;
+        padding-right: 30px;
+      }
+      .bigbutton {
+        width: 300px;
+      }
+      .mediumbutton {
+        width: 200px;
+      }
+      .smallbutton {
+        width: 100px;
+      }
+      .error {
+        color: red;
+      }
+      table {
+        margin: auto; 
+        text-align: center;
+        border-collapse: collapse; 
+        border-style: solid;
+      }
+	</style>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <script type="text/javascript" th:inline="javascript">
+      //фукция вывода значения элемента в подсказку(используется для отображения пароля)
+      function showPassword(element){
+	  	element.setAttribute('title', element.value);
+	  }
+    </script>
+  </head>
+  <body>
+  
+  	<!-- Шаблон класса berezin.azoft.forms.LoginForm, 
+  	     поля login и password, валидация -->
+    <div th:object="${admin}">
+    
+      <!-- форма смены пароля администратора. Метод PUT. Контроллер - метод updateAdmin -->
+      <form id="adminForm" th:action="@{/adminMode/admin(oldPassword=*{password})}" th:method="put">
+        <input type="hidden" form="adminForm" th:field="*{id}" />
+		<input type="hidden" form="adminForm" th:field="*{login}" />
+      </form>
+      
+      <!-- Обработка запроса - показать всех пользователей системы с возможностью удаления(кроме админа). Метод GET
+           Контроллер - метод userListAdminMode-->
+      <form id="showAndEditUsers" th:action="@{/adminMode/users}" method="get">
+        <input type="hidden" form="showAndEditUsers" th:field="*{password}" />
+      </form>
+      
+      <!-- Обработка запроса - переход на главную страницу  Контроллер - метод index-->
+      <form id="toIndexForm" th:action="@{/}"  th:method="get"></form>   
+         
+      <table class="head">
+        <thead>
+		  <tr>
+		    <th class="head">Меню администратора</th>	
+		  </tr>
+	    </thead>
+	  </table>
+	  
+	  <table> 
+  	    <tbody>
+  	      <tr>
+  	        <td class="toppadding" colspan="2">Логин (login):</td>
+  	      </tr>
+  	      <tr>
+  	        <td colspan="2">
+  	          <!-- Текстовое поле "логин", отображение текущего значения без возможности редактирования, 
+  	               будет передано экземпляру класса berezin.azoft.user.Users, поле login-->
+  	          <input type="text" disabled="disabled" form="adminForm" th:field="*{login}" />
+  	        </td>
+  	      </tr>
+  	      <tr>
+  	        <td class="toppadding" colspan="2">Пароль (password):</td>
+  	      </tr>
+  	      <tr>
+  	        <td colspan="2">
+  	          <!-- Текстовое поле "пароль", введеное значение будет передано экземпляру
+  	               класса berezin.azoft.forms.LoginForm, поле password-->
+  	          <input type="password" name="password" form="adminForm" th:value="*{password}" 
+  	                 onmouseover="showPassword(this)" oninput="showPassword(this)" />
+  	        </td>
+  	      </tr>
+  	      <tr>
+  	        <!-- Если введеное значение password не прошло валидацию, то будет 
+  	             выведено сообщение об ошибке-->
+  	        <td colspan="2" class="error" th:if="${#fields.hasErrors('password')}" th:errors="*{password}" />
+  	      </tr>
+  	      <tr>
+  	        <td style="text-align: right;">
+  	          <!-- Сменить пароль -->
+  	          <input class="smallbutton" type="submit" form="adminForm" value="Сохранить"
+			         onclick="return confirm('Сохранить?')" />
+  	        </td>
+  	        <td style="text-align: left;">
+  	          <!-- Очистить поля формы  -->
+  	          <input class="smallbutton" type="reset" form="adminForm" value="Очистить" />
+  	        </td>
+  	      </tr>
+  	      <tr>
+  	        <td colspan="2" style="text-align: left;">
+  	          <!-- Войти в список пользователей с возможностью удаления и просмотра деталей-->
+  	          <input class="bigbutton" type="submit" form="showAndEditUsers" value="Редактировать список пользователей" />
+  	        </td>
+  	      </tr>
+  	      <tr>
+  	        <td colspan="2">
+  	          <!-- Переход на главную страницу  -->
+  	          <input class="bigbutton" type="submit" form="toIndexForm" value="На главную странцицу" />
+  	        </td>
+  	     </tr>
+        </tbody>
+      </table>
+    </div>
+  </body>
+</html>

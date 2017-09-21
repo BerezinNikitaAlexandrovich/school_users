@@ -1,0 +1,206 @@
+<!-- 
+     http://localhost:8080/userAddingView
+     Создание и добавление нового пользователя в систему.
+     Обязательные для заполнения поля - login, password
+     Сообщения об ошибках при вводе неправильных данных
+     Реализация валидации в классе berezin.azoft.user.Users
+     Поле успешного добавления данных в БД, переход в созданный аккаунт пользователя 
+     Используется библиотека шаблонов thymeleaf
+-->
+
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <title>Добавить пользователя</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />  
+    <style type="text/css">
+	  .head {
+        margin: auto; 
+        text-align: center;
+        border: 0px;
+        padding: 10px;
+      }
+      .bigbutton {
+        width: 300px;
+      }
+      .mediumbutton {
+        width: 200px;
+      }
+      .smallbutton {
+        width: 100px;
+      }
+      .error{
+        color: red;
+      }
+      .toppadding {
+        padding-top: 10px;
+        padding-left: 30px;
+        padding-right: 30px;
+      }
+      table {
+        margin: auto; 
+        text-align: center;
+        border-collapse: collapse; 
+        border-style: solid;
+      }
+	</style>          
+    <script type="text/javascript" th:inline="javascript">
+      //фукция вывода значения элемента в подсказку(используется для отображения пароля)
+      function showPassword(element){
+	  	element.setAttribute('title', element.value);
+	  }
+    </script>
+  </head>
+  <body>
+  
+    <!-- Шаблон класса berezin.azoft.user.User -->
+    <div th:object="${user}">
+      
+      <!-- Отправка введенных пользователем данных. Метод Post. Контроллер - метод postUser -->
+      <form id="userForm" th:action="@{/users}"  th:method="post"></form>
+      
+      <!-- Обработка запроса - переход на главную страницу. Контроллер - метод index -->
+      <form id="toIndexForm" th:action="@{/}"  th:method="get"></form>
+      <table class="head">
+        <thead>
+		  <tr>
+		    <th class="head">Регистрация нового пользователя:</th>	
+		  </tr>
+	    </thead>
+	    <tbody>
+	      <tr>
+		    <td>*-поля обязательного заполнения</td>	
+		  </tr>
+	    </tbody>
+	  </table>
+	  
+	  <table> 
+	    <thead>
+		  <tr>
+		    <th colspan="2">Введите данные:</th>	
+		  </tr>
+	    </thead>
+  	    <tbody>
+  	      <tr>
+  	        <td class="toppadding" colspan="2">Введите логин (login)*:</td>
+  	      </tr>
+  	      <tr>
+  	        <td colspan="2">
+  	          <!-- Текстовое поле "логин", введеное значение будет передано экземпляру
+  	               класса berezin.azoft.user.Users, поле login-->
+  	          <input type="text" name="login" form="userForm" th:field="*{login}" />
+  	        </td>
+  	      </tr>
+  	      <tr>
+  	        <!-- Если введеное значение login не прошло валидацию, то будет 
+  	             выведено сообщение об ошибке-->
+  	        <td colspan="2" class="error" th:if="${#fields.hasErrors('login')}" th:errors="*{login}" />
+  	      </tr>
+  	      <tr>
+  	        <td class="toppadding" colspan="2">Введите пароль (password)*:</td>
+  	      </tr>
+  	      <tr>
+  	        <td colspan="2">
+  	          <!-- Текстовое поле "пароль", введеное значение будет передано экземпляру
+  	               класса berezin.azoft.user.Users, поле password-->
+  	          <input type="password" name="password" form="userForm" th:value="*{password}" 
+  	                 onmouseover="showPassword(this)" oninput="showPassword(this)"/>
+  	        </td>
+  	      </tr>
+  	      <tr>
+  	        <!-- Если введеное значение password не прошло валидацию, то будет 
+  	             выведено сообщение об ошибке-->
+  	        <td colspan="2" class="error" th:if="${#fields.hasErrors('password')}" th:errors="*{password}" />
+  	      </tr>
+  	      <tr>
+  	        <td class="toppadding" colspan="2">Введите Имя:</td>
+  	      </tr>
+  	      <tr>
+  	        <td colspan="2">
+  	          <!-- Текстовое поле "имя", введеное значение будет передано экземпляру
+  	               класса berezin.azoft.user.Users, поле name-->
+  	          <input type="text" name="name" form="userForm" th:field="*{name}" />
+  	        </td>
+  	      </tr>
+  	      <tr>
+  	        <!-- Если введеное значение name не прошло валидацию, то будет 
+  	             выведено сообщение об ошибке-->
+  	        <td colspan="2" class="error" th:if="${#fields.hasErrors('name')}" th:errors="*{name}" />
+  	      </tr>
+  	      <tr>
+  	        <td class="toppadding" colspan="2">Введите Фамилию:</td>
+  	      </tr>
+  	      <tr>
+  	        <td colspan="2">
+  	          <!-- Текстовое поле "фамилия", введеное значение будет передано экземпляру
+  	               класса berezin.azoft.user.Users, поле surName-->
+  	          <input type="text" name="surName" form="userForm" th:field="*{surName}" />
+  	        </td>
+  	      </tr>
+  	      <tr>
+  	        <!-- Если введеное значение surName не прошло валидацию, то будет 
+  	             выведено сообщение об ошибке-->
+  	        <td colspan="2" class="error" th:if="${#fields.hasErrors('surName')}" th:errors="*{surName}" />
+  	      </tr>
+  	      <tr>
+  	        <td class="toppadding" colspan="2">Введите дату рождения:</td>
+  	      </tr>
+  	      <tr>
+  	        <td colspan="2">
+  	          <!-- Текстовое поле "Адрес", введеное значение будет передано экземпляру
+  	               класса berezin.azoft.user.Users, поле birthDate Валидация осуществляется в теге input birthDate-->
+  	          <input type="date"  min="2000-01-01" max="2010-01-01" name="birthDate" form="userForm" th:field="*{birthDate}"/>
+  	        </td>
+  	      </tr>
+  	      <tr>
+  	        <td class="toppadding" colspan="2">Введите адрес проживания:</td>
+  	      </tr>
+  	      <tr>
+  	        <td colspan="2">
+  	          <!-- Текстовое поле "Адрес", введеное значение будет передано экземпляру
+  	               класса berezin.azoft.user.Users, поле adress-->
+  	          <input style="width: 300px;" type="text" name="adress" form="userForm" th:field="*{adress}" />
+  	        </td>
+  	      </tr>
+  	      <tr>
+  	        <!-- Если введеное значение adress не прошло валидацию, то будет 
+  	             выведено сообщение об ошибке-->
+  	        <td colspan="2" class="error" th:if="${#fields.hasErrors('adress')}" th:errors="*{adress}" />
+  	      </tr>
+  	      <tr>
+  	        <td class="toppadding" colspan="2">Краткое сообщение о себе (до 1000 символов):</td>
+  	      </tr>
+  	      <tr>
+  	        <td colspan="2">
+  	          <!-- Текстовое поле "Информация о себе", введеное значение будет передано экземпляру
+  	               класса berezin.azoft.user.Users, поле info-->
+  	          <textarea rows="15" cols="40" form="userForm" th:field="*{info}">
+			  </textarea>
+  	        </td>
+  	      </tr>
+  	      <tr>
+  	        <!-- Если введеное значение info не прошло валидацию, то будет 
+  	             выведено сообщение об ошибке-->
+  	        <td colspan="2" class="error" th:if="${#fields.hasErrors('info')}" th:errors="*{info}" />
+  	      </tr>
+  	      <tr>
+  	        <td style="text-align: right;">
+  	          <!-- Регистрация пользователя -->
+  	          <input class="smallbutton" type="submit" form="userForm" value="Регистрация" />
+  	        </td>
+  	        <td style="text-align: left;">
+  	          <!-- Очистить поля формы  -->
+  	          <input class="smallbutton" type="reset" form="userForm" value="Очистить" />
+  	        </td>
+  	      </tr>
+  	      <tr>
+  	        <td colspan="2">
+  	          <!-- Переход на главную страницу  -->
+  	          <input class="bigbutton" type="submit" form="toIndexForm" value="На главную странцицу" />
+  	        </td>
+  	      </tr>  
+        </tbody>
+      </table>
+    </div>        
+  </body> 
+</html>

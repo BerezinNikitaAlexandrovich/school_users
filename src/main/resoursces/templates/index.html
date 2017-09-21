@@ -1,0 +1,149 @@
+<!-- 
+	 http://localhost:8080/index
+	 http://localhost:8080
+     Главная страница приложения.
+     Регистрация нового пользователя
+     Вход пользователя в систему
+     Вход администратора в систему
+     Реализация валидации в классе berezin.azoft.forms.LoginForm
+     Сообщения об ошибках при вводе неправильных данных или ошибках, возникающих при работе с базой данных
+     Используется библиотека шаблонов thymeleaf
+-->
+
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <title>Главная страница. Вход в систему</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<style type="text/css">
+	  .head {
+        margin: auto; 
+        text-align: center;
+        border: 0px;
+        padding: 10px;
+      }
+      .toppadding {
+        padding-top: 10px;
+        padding-left: 30px;
+        padding-right: 30px;
+      }
+      .bigbutton {
+        width: 300px;
+      }
+      .mediumbutton {
+        width: 200px;
+      }
+      .smallbutton {
+        width: 100px;
+      }
+      .error {
+        color: red;
+      }
+      table {
+        margin: auto; 
+        text-align: center;
+        border-collapse: collapse; 
+        border-style: solid;
+      }
+	</style>
+	<script type="text/javascript" th:inline="javascript">
+      //фукция вывода значения элемента в подсказку(используется для отображения пароля)
+      function showPassword(element){
+	  	element.setAttribute('title', element.value);
+	  }
+    </script>
+  </head>
+  <body>
+  
+  	<!-- Шаблон класса berezin.azoft.forms.LoginForm, 
+  	 поля login и password -->
+    <div th:object="${loginForm}">
+    
+      <!-- форма login/password. Отправка значений полей login и password.
+       Используется шаблон loginForm. Контроллер - метод login -->
+      <form id="loginForm" th:action="@{/login}" method="post"></form>
+      
+      <!-- Обработка запроса - перейти к форме добавления нового пользователя. Контроллер - метод addingUserMenu-->
+      <form id="addUser" th:action="@{/userAddingView}" method="get"></form>
+      
+      <!-- Обработка запроса - показать всех пользователей системы(кроме админа). Контроллер - метод users-->
+      <form id="showUsers" th:action="@{/users}" method="get"></form>
+          
+      <table class="head">
+        <thead>
+		  <tr>
+		    <th class="head">Система управления пользователями</th>	
+		  </tr>
+		  <tr>
+		    <th class="head">Для входа в систему введите логин и пароль</th>	
+		  </tr>
+		  <tr>
+		    <th class="head">Для просмотра и регистрации пользователей нажмите соответствующие кнопки</th>	
+		  </tr>
+	    </thead>
+	  </table>
+	  
+	  <table> 
+  	    <tbody>
+  	      <tr>
+  	        <!-- Вывод сообщений пользователю при возникновении ошибок доступа и ошибок БД. Шаблон mw-->
+  	        <td colspan="2" class="error" th:text="${mw.message}" />
+  	      </tr>
+  	      <tr>
+  	        <td class="toppadding" colspan="2" >Введите логин (login):</td>
+  	      </tr>
+  	      <tr>
+  	        <td colspan="2" >
+  	          <!-- Текстовое поле "логин", введеное значение будет передано экземпляру
+  	               класса berezin.azoft.forms.LoginForm, поле login-->
+  	          <input type="text" name="login" form="loginForm" th:field="*{login}" />
+  	        </td>
+  	      </tr>
+  	      <tr>
+  	        <!-- Если введеное значение login не прошло валидацию, то будет 
+  	             выведено сообщение об ошибке-->
+  	        <td colspan="2" class="error" th:if="${#fields.hasErrors('login')}" th:errors="*{login}" />
+  	      </tr>
+  	      <tr>
+  	        <td class="toppadding" colspan="2">Введите пароль (password):</td>
+  	      </tr>
+  	      <tr>
+  	        <td colspan="2">
+  	          <!-- Текстовое поле "пароль", введеное значение будет передано экземпляру
+  	               класса berezin.azoft.forms.LoginForm, поле password-->
+  	          <input type="password" name="password" form="loginForm" th:field="*{password}" 
+  	                 onmouseover="showPassword(this)" oninput="showPassword(this)" />
+  	        </td>
+  	      </tr>
+  	      <tr>
+  	        <!-- Если введеное значение password не прошло валидацию, то будет 
+  	             выведено сообщение об ошибке-->
+  	        <td colspan="2" class="error" th:if="${#fields.hasErrors('password')}" th:errors="*{password}" />
+  	      </tr>
+  	      <tr>
+  	        <td style="text-align: right;">
+  	          <!-- Войти в систему -->
+  	          <input class="smallbutton" type="submit" form="loginForm" value="Войти" />
+  	        </td>
+  	        <td style="text-align: left;">
+  	          <!-- Очистить поля формы  -->
+  	          <input class="smallbutton" type="reset" form="loginForm" value="Очистить" />
+  	        </td>
+  	      </tr>
+  	      <tr>
+  	        <td colspan="2" style="text-align: center;">
+  	          <!-- Регистрация нового пользователя -->
+  	          <input class="bigbutton" type="submit" form="addUser" value="Регистрация пользователя" />
+  	        </td>
+  	      </tr>
+  	      <tr>
+  	        <td colspan="2" style="text-align: center;">
+  	          <!-- Посмотреть список пользователей -->
+  	          <input class="bigbutton" type="submit" form="showUsers" value="Список пользователей" />
+  	        </td>
+  	      </tr>
+        </tbody>
+      </table>
+    </div>
+  </body>
+</html>
